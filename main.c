@@ -186,6 +186,7 @@ void main(void)
                 font_set(ibm_font);
                 gotoxy(0, 0);
                 printf("Blending In\nWith The\nHomies\n\nPress Start to play");
+                score = 0;
 
                 if (inputs[6] == 1) {
                     currentState = 1;
