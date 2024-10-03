@@ -1,8 +1,8 @@
 /*
 
- HOMIE.C
+ UP_ARROW.H
 
- Tile Source File.
+ Include File.
 
  Info:
   Form                 : All tiles as one unit.
@@ -22,13 +22,14 @@
 
 */
 
-/* Start of tile array. */
-const unsigned char homie[] =
-{
-  0x00,0x38,0x00,0x7C,0x78,0x04,0x54,0x52,
-  0x04,0x02,0x7C,0x04,0x3C,0x18,0xDB,0x00,
-  0xC3,0x00,0x83,0x00,0x83,0x00,0x03,0xFC,
-  0x01,0x7E,0x00,0x7C,0x00,0x6C,0xEE,0xEE
-};
+#ifndef __up_arrow_h_INCLUDE
+#define __up_arrow_h_INCLUDE
 
-/* End of HOMIE.C */
+/* Bank of tiles. */
+#define up_arrowBank 0
+/* Start of tile array. */
+extern const unsigned char up_arrow[];
+
+#endif
+
+/* End of UP_ARROW.H */
