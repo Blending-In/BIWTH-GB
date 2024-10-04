@@ -1,2 +1,0 @@
-lcc -Wa-l -Wl-m -Wl-j -DUSE_SFR_FOR_REG -c -o main.o main.c sprites/homie.c sprites/homer.c sprites/left_arrow.c sprites/down_arrow.c sprites/up_arrow.c sprites/right_arrow.c -Isprites/
-lcc -Wa-l -Wl-m -Wl-j -DUSE_SFR_FOR_REG -o main.gb main.o homie.o homer.o left_arrow.o down_arrow.o up_arrow.o right_arrow.o

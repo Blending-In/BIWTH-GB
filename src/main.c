@@ -6,12 +6,12 @@
 #include <rand.h>
 
 // Sprites
-#include "sprites/homie.h"
-#include "sprites/homer.h"
-#include "sprites/left_arrow.h"
-#include "sprites/right_arrow.h"
-#include "sprites/up_arrow.h"
-#include "sprites/down_arrow.h"
+#include "sprites-gb/homie.h"
+#include "sprites-gb/homer.h"
+#include "sprites-gb/left_arrow.h"
+#include "sprites-gb/right_arrow.h"
+#include "sprites-gb/up_arrow.h"
+#include "sprites-gb/down_arrow.h"
 
 void drawHomie(int *x, int *y, int *curHomie) { 
     set_sprite_tile(curHomie, 0);
@@ -128,8 +128,6 @@ void main(void)
     set_sprite_data(8, 8, right_arrow);
     set_sprite_data(10, 10, down_arrow);
     set_sprite_data(12, 12, up_arrow);
-
-    // arrows (TODO: Draw the arrows lmao)
 
     seed = DIV_REG;
     seed |= (UWORD)DIV_REG << 8;
