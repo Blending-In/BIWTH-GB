@@ -4,3 +4,7 @@
 *.sym
 *.sav
 *.gb
+*.ihx
+*.noi
+*.asm
+nul

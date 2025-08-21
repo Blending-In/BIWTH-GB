@@ -1,66 +1,55 @@
-# "C" Makefile
-# check for devkitpro if target is gba
-ifeq ($(TARGET),gba)
-	ifeq ($(DEVKITPRO),)
-	$(error "Please set DEVKITPRO in your environment. export DEVKITPRO=/path/to/devkitpro")
-	endif
-	ifeq ($(DEVKITARM),)
-	$(error "Please set DEVKITARM in your environment. export DEVKITARM=/path/to/devkitarm")
-	endif
-endif
+GAMENAME = BIWTH
+SRC_DIR = src
+BUILD_DIR = build
 
 CC = lcc
-GAMENAME = BIWTH
-
-# all files in src/ recursively
-SRC = $(shell find src -type f -name '*.c')
-ifeq ($(TARGET),gba)
-	SRC := $(filter-out src/sprites-gb/%,$(SRC))
-endif
-
-# obj files o to bin/
-OBJ = $(patsubst src/%.c,%.o,$(SRC))
-# remove all file directories from OBJ files (so its in ./ instead of sprites-gb/)
-OBJ := $(notdir $(OBJ))
-
-BIN = bin
-BUILD = build
-SRC_DIR = src
-
-CFLAGS = -Wa-l -Wl-m -Wl-j -DUSE_SFR_FOR_REG
+CFLAGS = -Wa-l -Wl-m -Wl-j -DUSE_SFR_FOR_REG -DGB -I$(GBDK_INCLUDE)
 
 ifeq ($(TARGET),gba)
 	CC = arm-none-eabi-gcc
-	CFLAGS = -mthumb -mthumb-interwork -specs=$(DEVKITARM)/arm-none-eabi/lib/gba.specs -I$(DEVKITPRO)/libgba/include -I$(SRC_DIR) -DUSE_SFR_FOR_REG -DGBA
+	CFLAGS = -mthumb -mthumb-interwork \
+		-specs=$(DEVKITARM)/arm-none-eabi/lib/gba.specs \
+		-I$(DEVKITPRO)/libgba/include \
+		-I$(SRC_DIR) \
+		-DUSE_SFR_FOR_REG -DGBA
 endif
 
-gb: 
-	@echo "Compiling objects with $(CC)... with linker flag GB"
-	$(CC) -c $(CFLAGS) $(SRC) -o $(OBJ) -Isrc/sprites-gb
+# Find all C source files (recursively in subfolders)
+SRC = $(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/*.c)
 
-	@echo "Linking..."
-	$(CC) $(OBJ) -o $(BUILD)/$(GAMENAME).gb $(CFLAGS)
+# Convert .c -> .o, preserving folder names under build/
+OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
 
-gbc: 
-	@echo "Compiling objects with $(CC)..."
-	$(CC) -c $(CFLAGS) $(SRC) -o $(OBJ) -Isrc/sprites-gb
+# Create build directory tree automatically
+$(shell mkdir $(BUILD_DIR) 2>nul)
 
-	@echo "Linking..."
-	$(CC) $(OBJ) -o $(BUILD)/$(GAMENAME).gbc $(CFLAGS)
+# Rule for compiling any .c into matching .o in build/
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@echo "Compiling $< ..."
+	@mkdir $(dir $@) 2>nul || true
+	$(CC) -c $(CFLAGS) $< -o $@
 
-gba:
-	@echo "Compiling objects with $(CC)..."
-	$(CC) -c $(CFLAGS) $(SRC) -o $(OBJ)
 
-	@echo "Linking..."
-	$(CC) $(OBJ) -o $(BUILD)/$(GAMENAME).gba $(CFLAGS)
+all: gb
 
-# if arg is "clean"
+gb: $(OBJ)
+	@echo "Linking $(GAMENAME).gb ..."
+	$(CC) $(OBJ) -o $(BUILD_DIR)/$(GAMENAME).gb $(CFLAGS)
+
+gbc: $(OBJ)
+	@echo "Linking $(GAMENAME).gbc ..."
+	$(CC) $(OBJ) -o $(BUILD_DIR)/$(GAMENAME).gbc $(CFLAGS)
+
+gba: $(OBJ)
+	@echo "Linking $(GAMENAME).gba ..."
+	$(CC) $(OBJ) -o $(BUILD_DIR)/$(GAMENAME).gba $(CFLAGS)
+
 clean:
 	@echo "Cleaning up..."
-	rm -f *.o
-	rm -f *.lst
-	rm -f *.map
-	rm -f *.sym
-	rm -f $(BUILD)/$(GAMENAME).gb
-	rm -f $(BUILD)/$(GAMENAME).gbc
+	del /Q $(BUILD_DIR)\*.o 2>nul
+	del /Q $(BUILD_DIR)\*.lst 2>nul
+	del /Q $(BUILD_DIR)\*.map 2>nul
+	del /Q $(BUILD_DIR)\*.sym 2>nul
+	del /Q $(BUILD_DIR)\$(GAMENAME).gb 2>nul
+	del /Q $(BUILD_DIR)\$(GAMENAME).gbc 2>nul
+	del /Q $(BUILD_DIR)\$(GAMENAME).gba 2>nul

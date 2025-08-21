@@ -1,8 +1,8 @@
 #include <stdio.h>
 #if GB
 #include <gb/gb.h>
-#include <gb/font.h>
-#include <gb/console.h>
+#include <gbdk/font.h>
+#include <gbdk/console.h>
 #include <gb/drawing.h>
 #include <rand.h>
 #else
